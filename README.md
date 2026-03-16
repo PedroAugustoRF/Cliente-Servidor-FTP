@@ -217,7 +217,7 @@ Algumas evoluções possíveis:
 # 👨‍💻 Autor
 
 **Pedro Augusto Ribeiro Ferreira e colaboração de Eduardo Santana Cruz Almeida**
-Estudante de **Engenharia de Software**
+Estudantes de **Engenharia de Software**
 
 ---
 
