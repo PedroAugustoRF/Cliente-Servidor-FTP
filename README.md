@@ -1,54 +1,69 @@
 ---
 
-# 📡 Java FTP Client-Server
+# 📡 Java Socket File Transfer (Mini FTP)
 
-Sistema de **transferência de arquivos em Java** baseado em arquitetura **Cliente–Servidor**, utilizando **Sockets TCP** para envio e recebimento de arquivos `.txt`.
+![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge\&logo=java\&logoColor=white)
+![Sockets](https://img.shields.io/badge/TCP-Sockets-blue?style=for-the-badge)
+![Networking](https://img.shields.io/badge/Networking-Client--Server-green?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Working-success?style=for-the-badge)
 
-O projeto simula um **mini servidor FTP**, permitindo que um cliente se conecte ao servidor para **enviar e receber arquivos** através de comunicação de rede.
+Sistema de **transferência de arquivos em Java** baseado na arquitetura **Cliente-Servidor**, utilizando **Sockets TCP** para enviar e receber arquivos `.txt`.
+
+O projeto simula um **mini servidor FTP**, permitindo comunicação direta entre cliente e servidor para transferência de dados através da rede.
 
 ---
 
-# 🚀 Tecnologias Utilizadas
+# 🧠 Objetivo do Projeto
 
-* ☕ **Java**
-* 📡 **Sockets TCP**
-* 📂 **Java IO (Streams)**
-* 🧠 **Arquitetura Cliente-Servidor**
-* 💻 **Programação Orientada a Objetos**
+Este projeto foi desenvolvido com o objetivo de praticar conceitos fundamentais de:
+
+* comunicação em rede
+* sockets TCP
+* transferência de arquivos
+* arquitetura cliente-servidor
+* manipulação de arquivos com Java IO
 
 ---
 
 # 🏗 Arquitetura do Sistema
 
-O sistema segue o modelo clássico **Cliente-Servidor**:
-
 ```
-Cliente FTP
-     │
-     │ Conexão TCP
-     ▼
-Servidor FTP
-     │
-     ├── Recebe arquivos enviados pelo cliente
-     └── Envia arquivos solicitados pelo cliente
+                +-------------------+
+                |      Cliente      |
+                |    ClienteFTP     |
+                +---------+---------+
+                          |
+                          | Conexão TCP
+                          |
+                          v
+                +-------------------+
+                |      Servidor     |
+                |    ServidorFTP    |
+                +---------+---------+
+                          |
+                          |
+                +-------------------+
+                |  Sistema de Arquivos |
+                |  (Envio / Recebimento) |
+                +-------------------+
 ```
 
-### Componentes
+Fluxo do sistema:
 
-| Componente  | Responsabilidade                                        |
-| ----------- | ------------------------------------------------------- |
-| ClienteFTP  | Conectar ao servidor e enviar/receber arquivos          |
-| ServidorFTP | Aguardar conexões e gerenciar transferência de arquivos |
+1️⃣ Cliente conecta ao servidor
+2️⃣ Cliente envia arquivo
+3️⃣ Servidor recebe e salva
+4️⃣ Servidor pode enviar arquivo de volta
+5️⃣ Cliente recebe o arquivo
 
 ---
 
 # 📂 Estrutura do Projeto
 
 ```
-FTP
+java-ftp-socket
 │
 ├── ClienteFTP.java
-│
 ├── ServidorFTP.java
 │
 └── README.md
@@ -56,50 +71,49 @@ FTP
 
 ---
 
-# ⚙️ Como Funciona
+# 🚀 Tecnologias Utilizadas
 
-### 1️⃣ Inicialização do Servidor
+* **Java**
+* **Java Networking (Sockets)**
+* **TCP/IP**
+* **Java IO**
+* **Buffered Streams**
 
-O servidor inicia um **ServerSocket** e fica aguardando conexões.
+---
+
+# ⚙️ Funcionamento
+
+## Inicialização do Servidor
+
+O servidor cria um `ServerSocket` e aguarda conexões de clientes.
 
 ```java
 ServerSocket servidor = new ServerSocket(12345);
 Socket cliente = servidor.accept();
 ```
 
-Quando um cliente se conecta, o servidor:
-
-* recebe arquivos enviados
-* pode enviar arquivos de volta ao cliente
+Quando um cliente se conecta, o servidor inicia a transferência de dados.
 
 ---
 
-### 2️⃣ Conexão do Cliente
+## Conexão do Cliente
 
-O cliente se conecta ao servidor através de um **Socket**.
+O cliente estabelece conexão com o servidor utilizando um `Socket`.
 
 ```java
 Socket socket = new Socket("localhost", 12345);
 ```
 
-Após conectar, ele pode:
+Após conectar, o cliente pode:
 
-* enviar um arquivo `.txt`
-* receber um arquivo do servidor
+* enviar arquivos
+* receber arquivos
 
 ---
 
-### 3️⃣ Transferência de Arquivos
+# 📤 Envio de Arquivo
 
-A transferência utiliza **streams de leitura e escrita**:
-
-* `BufferedReader`
-* `BufferedWriter`
-* `PrintWriter`
-* `FileReader`
-* `FileWriter`
-
-Exemplo de envio de dados:
+O envio de arquivos utiliza **streams de leitura e escrita**:
 
 ```java
 while ((linha = leitorArquivo.readLine()) != null) {
@@ -107,19 +121,39 @@ while ((linha = leitorArquivo.readLine()) != null) {
 }
 ```
 
+Após o envio:
+
+```java
+socket.shutdownOutput();
+```
+
+Isso sinaliza ao servidor que o envio foi finalizado.
+
 ---
 
-# 📥 Como Executar o Projeto
+# 📥 Recebimento de Arquivo
 
-### 1️⃣ Clonar o repositório
+O servidor recebe o conteúdo linha por linha:
 
-```bash
-git clone https://github.com/seuusuario/seu-repositorio.git
+```java
+while ((linha = in.readLine()) != null) {
+    writer.write(linha);
+}
 ```
 
 ---
 
-### 2️⃣ Compilar os arquivos
+# ▶️ Como Executar
+
+## 1️⃣ Clonar o repositório
+
+```bash
+git clone https://github.com/seuusuario/java-ftp-socket.git
+```
+
+---
+
+## 2️⃣ Compilar o projeto
 
 ```bash
 javac ServidorFTP.java
@@ -128,7 +162,7 @@ javac ClienteFTP.java
 
 ---
 
-### 3️⃣ Iniciar o servidor
+## 3️⃣ Iniciar o servidor
 
 ```bash
 java ServidorFTP
@@ -136,7 +170,7 @@ java ServidorFTP
 
 ---
 
-### 4️⃣ Executar o cliente
+## 4️⃣ Executar o cliente
 
 Em outro terminal:
 
@@ -148,61 +182,49 @@ java ClienteFTP
 
 # 📌 Funcionalidades
 
-✔ Conexão cliente-servidor via TCP
-✔ Envio de arquivos `.txt`
-✔ Recebimento de arquivos
-✔ Comunicação via sockets
-✔ Uso de **Java IO Streams**
+✔ Conexão via TCP
+✔ Transferência de arquivos `.txt`
+✔ Comunicação cliente-servidor
+✔ Uso de Java IO
 ✔ Encerramento seguro da conexão
 
 ---
 
-# 🧠 Conceitos Aplicados
+# 📚 Conceitos Aplicados
 
-Este projeto demonstra na prática conceitos importantes de desenvolvimento:
+Durante o desenvolvimento foram aplicados conceitos importantes de engenharia de software:
 
-* **Programação em Redes**
-* **Sockets TCP**
-* **Transferência de Arquivos**
 * **Arquitetura Cliente-Servidor**
-* **Gerenciamento de Streams**
-* **Tratamento de Exceções**
+* **Sockets TCP**
+* **Manipulação de arquivos**
+* **Streams em Java**
+* **Tratamento de exceções**
+* **Comunicação em rede**
 
 ---
 
-# 📈 Possíveis Melhorias
+# 🔮 Melhorias Futuras
 
-Algumas evoluções futuras para o projeto:
+Algumas evoluções possíveis:
 
 * suporte a **múltiplos clientes simultâneos (Threads)**
-* envio de **arquivos binários (PDF, imagens, ZIP)**
-* criação de **protocolo de comandos (GET, PUT, LIST)**
+* envio de **arquivos binários**
+* implementação de **comandos FTP (GET / PUT / LIST)**
 * autenticação de usuários
 * interface gráfica
+* barra de progresso de upload
 
 ---
 
 # 👨‍💻 Autor
 
 **Pedro Augusto Ribeiro Ferreira e colaboração de Eduardo Santana Cruz Almeida**
-
-Estudante de **Engenharia de Software** com foco em desenvolvimento backend e conceitos de programação orientada a objetos.
-
----
-
-# ⭐ Contribuição
-
-Contribuições são bem-vindas.
-
-1. Faça um fork do projeto
-2. Crie uma branch
-3. Faça suas alterações
-4. Envie um Pull Request
+Estudante de **Engenharia de Software**
 
 ---
 
-# 📜 Licença
+# ⭐ Se gostou do projeto
 
-Este projeto é de uso educacional.
+Deixe uma **⭐ no repositório** para apoiar o desenvolvimento.
 
 ---
